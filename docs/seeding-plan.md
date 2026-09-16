@@ -1,6 +1,6 @@
 # Hosted demo seeding plan
 
-Status: planned. No hosted project has been configured or seeded.
+Status: planned. The seeding script is not implemented and no historical import has run.
 
 ## Demo scope
 
@@ -53,7 +53,7 @@ Create a small dashboard for active users, file activity, and affected users thr
 
 Use isolated tests for identity conversion, timestamp bounds, credential-free manifests, deterministic retry payloads, and interrupted-upload recovery. Exercise the uploader against a local HTTP stub before one small hosted batch. Finish by checking an affected user's seeded history and live session, then verify that the generated PR builds and fixes the original reproduction while ordinary files still work.
 
-## Inputs still needed
+## Required inputs
 
 - Hosted project URL and its ingestion configuration.
 - Final deployed or local app origin used during the demo.

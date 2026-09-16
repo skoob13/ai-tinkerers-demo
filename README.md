@@ -19,7 +19,7 @@ Open http://localhost:3000. Without a PostHog project key, analytics is disabled
 
 Copy `.env.example` to `.env.local`, set your project's public ingestion key and ingestion host, then restart the app. Use the host shown in your project's SDK setup instructions (for example, `https://us.i.posthog.com` or `https://eu.i.posthog.com`).
 
-Enable session replay and error tracking in your PostHog project and verify their capture settings before using them in a demo. Connecting analytics alone does not configure Self-driving or GitHub access.
+The SDK explicitly captures unhandled errors and promise rejections and allows session recording. Enable session replay in your PostHog project; its recording rules still apply. On Vercel, set `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_HOST` before building, then redeploy. Verify capture before using it in a demo. Connecting analytics alone does not configure Self-driving or GitHub access.
 
 ## Demo data
 

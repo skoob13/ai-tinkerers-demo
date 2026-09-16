@@ -17,6 +17,8 @@ export function initPostHog(): void {
             disable_compression: true,
             capture_pageview: 'history_change',
             autocapture: true,
+            capture_exceptions: true,
+            disable_session_recording: false,
             persistence: 'memory',
             opt_out_useragent_filter: true,
         })

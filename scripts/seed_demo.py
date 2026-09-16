@@ -482,7 +482,12 @@ class Importer:
             if len(encode(self.payload(batch))) > MAX_BATCH_BYTES:
                 raise ValueError("A single event exceeds the upload size cap")
             response = self.client.request(f"{self.ingest}/batch/", self.payload(batch))
-            if response != 1 and (not isinstance(response, dict) or response.get("status") != 1):
+            acknowledged = response == 1 or (
+                isinstance(response, dict)
+                and response.get("status") in (1, "Ok")
+                and not response.get("quota_limited")
+            )
+            if not acknowledged:
                 raise RuntimeError("Capture did not acknowledge the batch; progress was not advanced")
             next_event += len(batch)
             write_json(state_path, {"binding": self.binding, "next_event": next_event})
@@ -508,7 +513,7 @@ class Importer:
         result = object_value(
             self.client.request(
                 f"{self.api}/api/projects/{self.project_id}/query/",
-                {"query": {"kind": "HogQLQuery", "query": query}},
+                {"query": {"kind": "HogQLQuery", "query": query}, "refresh": "force_blocking"},
                 self.personal_key,
             )
         )
@@ -527,6 +532,7 @@ class Importer:
             self.client.request(
                 f"{self.api}/api/projects/{self.project_id}/query/",
                 {
+                    "refresh": "force_blocking",
                     "query": {
                         "kind": "HogQLQuery",
                         "query": "SELECT distinct_id, groupUniqArray(toString(person.id)), "

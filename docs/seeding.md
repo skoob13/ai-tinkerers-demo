@@ -72,7 +72,7 @@ python3 scripts/seed-demo.py verify \
   --env-file .env.local
 ```
 
-Verification scopes queries to the dataset and date range. It checks per-event totals, duplicate UUIDs, anonymous-to-identified person relationships, and account associations on events. It writes `verification.json` and returns a nonzero exit code for incomplete ingestion or mismatches. Retrying verification is read-only. It does not validate recordings or prove the existence of a real application bug.
+Verification scopes queries to the dataset and date range and forces fresh results instead of reading the query cache. It checks per-event totals, duplicate UUIDs, anonymous-to-identified person relationships, and account associations on events. It writes `verification.json` and returns a nonzero exit code for incomplete ingestion or mismatches. Retrying verification is read-only. It does not validate recordings or prove the existence of a real application bug.
 
 ## Continue a seeded user's history in the app
 

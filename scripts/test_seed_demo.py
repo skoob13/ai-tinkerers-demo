@@ -22,7 +22,7 @@ class FakeClient(HttpClient):
     def __init__(self, token="phc_example", fail_batch=None, acknowledgement=None):
         self.token = token
         self.fail_batch = fail_batch
-        self.acknowledgement = acknowledgement if acknowledgement is not None else {"status": 1}
+        self.acknowledgement = acknowledgement if acknowledgement is not None else {"status": "Ok"}
         self.batches = []
         self.query_result = {"results": []}
         self.identity_result = {"results": []}
@@ -31,6 +31,8 @@ class FakeClient(HttpClient):
         if "/api/projects/" in url and body is None:
             return {"id": 123, "api_token": self.token}
         if "/query/" in url:
+            if body.get("refresh") != "force_blocking":
+                raise ValueError("Verification must bypass cached query results")
             return self.identity_result if "SELECT distinct_id" in body["query"]["query"] else self.query_result
         self.batches.append(copy.deepcopy(body))
         if len(self.batches) == self.fail_batch:
@@ -162,7 +164,7 @@ class SeedTests(unittest.TestCase):
             importer.upload()
         state = json.loads((self.directory / "upload-state.json").read_text())
         self.assertEqual(state["next_event"], 200)
-        resumed = FakeClient()
+        resumed = FakeClient(acknowledgement={"status": 1})
         Importer(dataset, self.directory, 123, "us", "phc_example", "phx_example", resumed).upload()
         self.assertEqual(resumed.batches[0], client.batches[1])
         self.assertTrue(resumed.batches[0]["historical_migration"])
@@ -189,10 +191,12 @@ class SeedTests(unittest.TestCase):
 
     def test_does_not_advance_on_rejected_capture_response(self):
         dataset = self.dataset()
-        client = FakeClient(acknowledgement={"status": 0})
-        with self.assertRaisesRegex(RuntimeError, "did not acknowledge"):
-            Importer(dataset, self.directory, 123, "us", "phc_example", "phx_example", client).upload()
-        self.assertEqual(json.loads((self.directory / "upload-state.json").read_text())["next_event"], 0)
+        for response in ({"status": 0}, {"status": "Ok", "quota_limited": ["events"]}):
+            with self.subTest(response=response):
+                client = FakeClient(acknowledgement=response)
+                with self.assertRaisesRegex(RuntimeError, "did not acknowledge"):
+                    Importer(dataset, self.directory, 123, "us", "phc_example", "phx_example", client).upload()
+                self.assertEqual(json.loads((self.directory / "upload-state.json").read_text())["next_event"], 0)
 
     def test_verification_requires_exact_counts_without_duplicate_uuids(self):
         dataset = self.dataset()

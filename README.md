@@ -25,6 +25,10 @@ The SDK explicitly captures unhandled errors and promise rejections and allows s
 
 Use the [seeding guide](docs/seeding.md) to generate matrix data locally, import it into a hosted PostHog project, verify ingestion, and export matching demo personas. Generation does not upload anything. The [design plan](docs/seeding-plan.md) records the broader demo scope.
 
+## Exception demos
+
+Open `/demo` to reproduce clipboard-permission and incomplete-profile failures. See the [exception demo guide](docs/exception-demos.md) for setup, expected errors, and account reset instructions.
+
 ## Checks
 
 ```bash

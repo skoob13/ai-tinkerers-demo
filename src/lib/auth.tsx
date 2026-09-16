@@ -14,6 +14,7 @@ interface User {
     avatar?: string
     account_id?: string
     demo_seed_id?: string
+    demo_scenario?: string
 }
 
 interface AuthContextType {
@@ -28,6 +29,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 function identifyUser(user: User): void {
     initPostHog()
+    if (user.demo_scenario) {
+        posthog.register({ demo_scenario: user.demo_scenario, demo_synthetic: true })
+    }
     posthog.identify(user.id, { name: user.name, email: user.email, plan: user.plan })
     if (user.account_id) {
         posthog.group('account', user.account_id)

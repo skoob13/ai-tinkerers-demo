@@ -1,44 +1,33 @@
 # Hedgebox
 
-Hedgebox is a file storage and sharing app for hedgehogs — think Dropbox, but for hedgehogs.
+Hedgebox is a file storage and sharing app for hedgehogs.
 
-This is a Next.js app with login/signup flows, a file management interface, a pricing page, a Marius Tech Tips landing page, and PostHog integration for product analytics and session recording.
+This Next.js demo includes login/signup flows, a file management interface, pricing, and PostHog integration. Users and file actions are simulated in the browser; no storage backend is required.
 
-## Setup
+## Run locally
 
-1. Install dependencies:
+Install dependencies and start the app:
 
 ```bash
 pnpm install
+pnpm dev
 ```
 
-2. Set up PostHog environment variables:
+Open http://localhost:3000. Without a PostHog project key, analytics is disabled. Development and production builds do not query a database or modify your environment file.
 
-The app automatically fetches the PostHog API key from your local database at build/dev time. You can configure the database connection and team ID using these environment variables:
+## Connect PostHog
 
-```env
-NEXT_PUBLIC_POSTHOG_HOST # PostHog host (default: http://localhost:8010)
-NEXT_PUBLIC_POSTHOG_KEY  # PostHog API key, fetched automatically on `pnpm run dev`
-POSTHOG_TEAM_ID          # Team ID to fetch token from (default: latest team)
-```
+Copy `.env.example` to `.env.local`, set your project's public ingestion key and ingestion host, then restart the app. Use the host shown in your project's SDK setup instructions (for example, `https://us.i.posthog.com` or `https://eu.i.posthog.com`).
 
-**Note:** The API key is automatically fetched and written to `.env.local` when you run `pnpm run dev` or `pnpm run build`. The script will skip fetching if `.env.local` already exists (to avoid unnecessary database queries on every run).
+Enable session replay and error tracking in your PostHog project and verify their capture settings before using them in a demo. Connecting analytics alone does not configure Self-driving or GitHub access.
 
-To manually fetch the key or force a re-fetch, run:
+## Demo data
+
+The [seeding plan](docs/seeding-plan.md) describes the planned synthetic data generator and hosted-project importer. Seeding is not implemented yet.
+
+## Checks
 
 ```bash
-# Fetch if .env.local doesn't exist or doesn't have key NEXT_PUBLIC_POSTHOG_KEY
-pnpm run fetch-posthog-key
-# Force re-fetch even if NEXT_PUBLIC_POSTHOG_KEY set in .env.local
-FORCE_FETCH_KEY=1 pnpm run fetch-posthog-key
+pnpm exec tsc --noEmit
+pnpm build
 ```
-
-Alternatively, you can manually create a `.env.local` file with the `NEXT_*` vars above.
-
-3. Run the development server:
-
-```bash
-pnpm run dev
-```
-
-The app will be available at [http://localhost:3000](http://localhost:3000).

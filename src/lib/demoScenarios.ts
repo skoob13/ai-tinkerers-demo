@@ -6,6 +6,7 @@ export interface DemoAccountFixture {
     name?: string
     plan: string
     demo_scenario: string
+    account_id?: string
 }
 
 const accounts: Record<string, DemoAccountFixture> = {
@@ -24,10 +25,19 @@ const accounts: Record<string, DemoAccountFixture> = {
     },
 }
 
+export function findDemoAccount(email: string): DemoAccountFixture | undefined {
+    return Object.values(accounts).find((account) => account.email === email.trim().toLowerCase())
+}
+
+export function openDemoAccount(account: DemoAccountFixture): void {
+    localStorage.setItem('hedgebox_user', JSON.stringify(account))
+    const embeddedWorkspace = account.demo_scenario === 'clipboard-permission-denied' && window.self === window.top
+    window.location.assign(embeddedWorkspace ? '/workspace' : '/files')
+}
+
 export function startDemoScenario(scenario: 'clipboard' | 'profile'): void {
     posthog.reset()
-    localStorage.setItem('hedgebox_user', JSON.stringify(accounts[scenario]))
-    window.location.assign(scenario === 'clipboard' ? '/demo/clipboard' : '/files')
+    openDemoAccount(accounts[scenario])
 }
 
 export function resetDemoScenario(): void {

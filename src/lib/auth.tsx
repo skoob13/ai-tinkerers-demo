@@ -4,6 +4,7 @@ import React, { ReactNode, createContext, useContext, useEffect, useState } from
 
 import { sampleUsers } from './data'
 import { findDemoPersona } from './demoPersonas'
+import { DemoAccountFixture, findDemoAccount, openDemoAccount } from './demoScenarios'
 import { initPostHog, posthog } from './posthog'
 
 interface User {
@@ -27,7 +28,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-function identifyUser(user: User): void {
+function identifyUser(user: User | DemoAccountFixture): void {
     initPostHog()
     if (user.demo_scenario) {
         posthog.register({ demo_scenario: user.demo_scenario, demo_synthetic: true })
@@ -64,6 +65,14 @@ export function AuthProvider({ children }: { children: ReactNode }): React.JSX.E
 
         try {
             await new Promise((resolve) => setTimeout(resolve, 1500))
+
+            const demoAccount = findDemoAccount(email)
+            if (demoAccount) {
+                identifyUser(demoAccount)
+                posthog.capture('logged_in')
+                openDemoAccount(demoAccount)
+                return true
+            }
 
             let userData: User | undefined = (await findDemoPersona(email)) ?? sampleUsers.find((u) => u.email === email)
             if (!userData) {

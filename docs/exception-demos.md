@@ -6,12 +6,12 @@ These scenarios exercise application failures using synthetic accounts and ordin
 
 Deploy this revision with `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_HOST` configured at build time. Enable the Error tracking new-issue responder in the same PostHog project and connect this repository. Confirm the SDK initializes before triggering either scenario. The app captures unhandled promise rejections and forwards React error-boundary failures with `captureException`.
 
-Open `/demo` on HTTPS or localhost. Use one browser tab at a time: selecting a scenario replaces that origin's simulated login in local storage. These are fixed synthetic accounts with reserved `example.com` addresses. Each account adds `demo_scenario` and `demo_synthetic` properties to captured events. No credentials or real user records are involved.
+Use the normal `/login` page on HTTPS or localhost with either account below and any nonempty password. Use one browser tab at a time: signing in replaces that origin's simulated login in local storage. `/demo` remains an optional setup shortcut. These are fixed synthetic accounts with reserved `example.com` addresses. Each account adds `demo_scenario` and `demo_synthetic` properties to captured events. No credentials or real user records are involved.
 
 ## Clipboard permission denied
 
-1. Choose **Open clipboard scenario**. This restores Robin Demo and opens the file detail page inside a same-origin frame.
-2. In the embedded workspace, choose **Share**, then **Copy**.
+1. Log in as `clipboard-user@example.com`. Robin Demo opens the normal file dashboard in the embedded `/workspace`.
+2. Open any file, choose **Share**, then **Copy**.
 3. The frame's `clipboard-write 'none'` permissions policy makes the browser reject the real Clipboard API call. The current copy handler does not handle that rejection and records success before copying succeeds.
 4. Find the `NotAllowedError` in Error tracking with `demo_scenario = clipboard-permission-denied`, then follow the corresponding Self-driving report.
 
@@ -21,16 +21,16 @@ Expected repaired behavior: copying succeeds when allowed; rejection leaves a us
 
 ## Missing display name
 
-1. Return to `/demo` and choose **Open profile scenario**.
-2. The fixture restores an account without a `name`, modeling an incomplete legacy profile, and navigates to `/files`.
-3. The files page reads `user.name.split(...)` and raises a `TypeError`. The application error boundary captures the actual error and displays a recovery link.
+1. Sign out, then log in as `legacy-profile@example.com`.
+2. Login identifies the synthetic account and records `logged_in`, then restores its incomplete profile and navigates to `/files`. The missing `name` models a legacy account whose profile was not fully populated.
+3. The files page reads `user.name.split(...)` and raises a `TypeError`. The application error boundary captures the actual error and displays a sign-out button.
 4. Find the issue with `demo_scenario = missing-display-name`, then follow its Self-driving report.
 
 Expected repaired behavior: incomplete profile data does not crash the workspace, and ordinary named accounts continue to display correctly. The fixture should remain usable after a fix as a regression reproduction.
 
 ## Reset and verification
 
-Use **Open demo setup**, then **Clear demo account** to remove the simulated login and return to the login page. Close the clipboard frame before switching scenarios. Reloading the missing-name workspace before resetting will reproduce the failure again.
+Use **Sign out and return to login** on the error page to remove the simulated login. For the clipboard account, use the profile menu's **Log out**. `/demo` also provides **Clear demo account**. Close the clipboard frame before switching scenarios. Reloading the missing-name workspace before resetting will reproduce the failure again.
 
 Trigger each scenario once initially. Confirm the exception has the expected account, scenario property, application stack, and Self-driving report before repeating it. Multiple occurrences may group into the same issue; a new report is not guaranteed for every click. A report is evidence of intake, not a guarantee that a PR will be generated.
 

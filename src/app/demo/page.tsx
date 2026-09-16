@@ -33,7 +33,7 @@ export default function DemoPage(): React.JSX.Element {
             {error && <p role="alert" className="alert alert-error">{error}</p>}
             <section className="card bg-base-200 p-6 space-y-3">
                 <h2 className="text-xl font-semibold">Clipboard access denied</h2>
-                <p>Open a file in an embedded workspace where the browser blocks clipboard writes. Choose Share, then Copy.</p>
+                <p>Open the embedded workspace, choose a file, then choose Share and Copy.</p>
                 <button disabled={isStarting} className="btn btn-primary" onClick={() => start('clipboard')}>
                     Open clipboard scenario
                 </button>

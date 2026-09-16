@@ -27,7 +27,7 @@ Use the [seeding guide](docs/seeding.md) to generate matrix data locally, import
 
 ## Exception demos
 
-Open `/demo` to reproduce clipboard-permission and incomplete-profile failures. See the [exception demo guide](docs/exception-demos.md) for setup, expected errors, and account reset instructions.
+Log in as `clipboard-user@example.com` or `legacy-profile@example.com` with any nonempty password to reproduce failures through the file-sharing and dashboard journeys. `/demo` provides optional setup shortcuts. See the [exception demo guide](docs/exception-demos.md) for setup, expected errors, and account reset instructions.
 
 ## Checks
 

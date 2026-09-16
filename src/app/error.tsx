@@ -1,6 +1,8 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+import { resetDemoScenario } from '@/lib/demoScenarios'
 
 import { initPostHog, posthog } from '@/lib/posthog'
 
@@ -10,6 +12,8 @@ interface AppErrorProps {
 
 export default function AppError({ error }: AppErrorProps): React.JSX.Element {
     const capturedError = useRef<Error | null>(null)
+    const [isLeaving, setIsLeaving] = useState(false)
+    const [resetError, setResetError] = useState(false)
 
     useEffect(() => {
         if (capturedError.current !== error) {
@@ -22,8 +26,24 @@ export default function AppError({ error }: AppErrorProps): React.JSX.Element {
     return (
         <main className="mx-auto max-w-xl space-y-4 p-8">
             <h1 className="text-2xl font-bold">Could not open this page</h1>
-            <p>Try reloading the page. If this happened during a demo, return to the setup page to clear the demo account.</p>
-            <a className="btn btn-primary" href="/demo">Open demo setup</a>
+            <p>Your workspace could not load. Sign out and try another account.</p>
+            {resetError && <p role="alert">Could not sign out. Allow browser storage and try again.</p>}
+            <button
+                className="btn btn-primary"
+                disabled={isLeaving}
+                onClick={() => {
+                    setIsLeaving(true)
+                    setResetError(false)
+                    try {
+                        resetDemoScenario()
+                    } catch {
+                        setResetError(true)
+                        setIsLeaving(false)
+                    }
+                }}
+            >
+                {isLeaving ? 'Signing out...' : 'Sign out and return to login'}
+            </button>
         </main>
     )
 }

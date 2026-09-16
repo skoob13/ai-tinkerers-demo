@@ -11,7 +11,7 @@ export function initPostHog(): void {
             console.info('Analytics is disabled. Set NEXT_PUBLIC_POSTHOG_KEY in .env.local to enable it.')
             return
         }
-        const apiHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'http://localhost:8010'
+        const apiHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com'
         posthog.init(apiToken, {
             api_host: apiHost,
             disable_compression: true,

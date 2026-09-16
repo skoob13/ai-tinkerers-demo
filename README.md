@@ -23,11 +23,12 @@ Enable session replay and error tracking in your PostHog project and verify thei
 
 ## Demo data
 
-The [seeding plan](docs/seeding-plan.md) describes the planned synthetic data generator and hosted-project importer. Seeding is not implemented yet.
+Use the [seeding guide](docs/seeding.md) to generate matrix data locally, import it into a hosted PostHog project, verify ingestion, and export matching demo personas. Generation does not upload anything. The [design plan](docs/seeding-plan.md) records the broader demo scope.
 
 ## Checks
 
 ```bash
+python3 -m unittest discover -s scripts -p 'test_*.py'
 pnpm exec tsc --noEmit
 pnpm build
 ```

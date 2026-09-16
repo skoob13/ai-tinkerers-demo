@@ -15,7 +15,7 @@ export function initPostHog(): void {
         posthog.init(apiToken, {
             api_host: apiHost,
             disable_compression: true,
-            capture_pageview: false,
+            capture_pageview: 'history_change',
             autocapture: true,
             persistence: 'memory',
             opt_out_useragent_filter: true,

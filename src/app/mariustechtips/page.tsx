@@ -1,23 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect } from 'react'
 
 import Header from '@/components/Header'
 import { posthog } from '@/lib/posthog'
 
 export default function MariusTechTipsPage(): React.JSX.Element {
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            posthog.capture('$pageview', {
-                $current_url: window.location.href,
-                $host: window.location.host,
-                $pathname: window.location.pathname,
-                utm_source: new URLSearchParams(window.location.search).get('utm_source'),
-            })
-        }
-    }, [])
-
     const handleProductAdClick = (adNumber: number, url: string): void => {
         posthog.capture('$autocapture', {
             $event_type: 'click',

@@ -1,6 +1,6 @@
 # Hosted demo seeding plan
 
-Status: planned. The seeding script is not implemented and no historical import has run.
+Status: generation, validation, resumable upload, ingestion verification, and persona export are implemented. See the [seeding guide](seeding.md) for commands. Live exception capture, replay recording, dashboards, and the Self-driving walkthrough remain separate setup steps.
 
 ## Demo scope
 
@@ -32,7 +32,7 @@ Write artifacts to the ignored `.seed/` directory:
 - `personas.json`: a few usable demo personas with the same user and account IDs as their seeded histories.
 - `upload-state.json`: target project, manifest checksum, and acknowledged batches for resumable uploads. Reject a resume against a different target or manifest.
 
-Before importing, align app instrumentation with the matrix: emit `shared_file_link`, capture navigation pageviews, and attach account groups. Add an explicit demo-persona selection mechanism so a browser session can continue a seeded user's history. Keep analytics disabled until the hosted project configuration is supplied.
+Before importing, align app instrumentation with the matrix: emit `shared_file_link`, capture navigation pageviews, and attach account groups. Add an explicit demo-persona selection mechanism so a browser session can continue a seeded user's history. Configure the app with the ingestion token for the same hosted project.
 
 ## Hosted import
 

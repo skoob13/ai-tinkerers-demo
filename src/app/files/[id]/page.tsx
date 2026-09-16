@@ -97,7 +97,7 @@ export default function FilePage({ params }: FilePageProps): React.JSX.Element |
     }
 
     const handleShare = (): void => {
-        posthog.capture('shared_file', {
+        posthog.capture('shared_file_link', {
             file_id: file.id,
             file_type: file.type,
             file_size_b: file.size,

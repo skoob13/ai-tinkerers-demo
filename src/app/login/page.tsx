@@ -34,7 +34,9 @@ export default function LoginPage(): JSX.Element {
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault()
         setError('')
-        await login(formData.email, formData.password)
+        if (!(await login(formData.email, formData.password))) {
+            setError('Could not load this demo account. Check that its persona file is deployed, then try again.')
+        }
     }
 
     return (

@@ -50,7 +50,7 @@ export default function FilesPage(): React.JSX.Element | null {
     }
 
     const trackFileAction = (action: string, file: HedgeboxFile): void => {
-        posthog.capture(`${action}_file`, {
+        posthog.capture(action === 'shared' ? 'shared_file_link' : `${action}_file`, {
             file_type: file.type,
             file_size_b: file.size,
         })

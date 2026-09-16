@@ -3,7 +3,8 @@
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 
 import { sampleUsers } from './data'
-import { posthog } from './posthog'
+import { findDemoPersona } from './demoPersonas'
+import { initPostHog, posthog } from './posthog'
 
 interface User {
     id: string
@@ -11,6 +12,8 @@ interface User {
     email: string
     plan: string
     avatar?: string
+    account_id?: string
+    demo_seed_id?: string
 }
 
 interface AuthContextType {
@@ -23,19 +26,28 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+function identifyUser(user: User): void {
+    initPostHog()
+    posthog.identify(user.id, { name: user.name, email: user.email, plan: user.plan })
+    if (user.account_id) {
+        posthog.group('account', user.account_id)
+    }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }): React.JSX.Element {
     const [user, setUser] = useState<User | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
     // Load user from localStorage on mount
     useEffect(() => {
+        initPostHog()
         const savedUser = localStorage.getItem('hedgebox_user')
         if (savedUser) {
             try {
                 const userData = JSON.parse(savedUser)
                 setUser(userData)
                 // Re-identify user on page load
-                posthog.identify(userData.id, userData)
+                identifyUser(userData)
             } catch {
                 localStorage.removeItem('hedgebox_user')
             }
@@ -49,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }): React.JSX.E
         try {
             await new Promise((resolve) => setTimeout(resolve, 1500))
 
-            let userData = sampleUsers.find((u) => u.email === email)
+            let userData: User | undefined = (await findDemoPersona(email)) ?? sampleUsers.find((u) => u.email === email)
             if (!userData) {
                 const name = email.split('@')[0].replace(/[._]/g, ' ')
                 userData = {
@@ -72,8 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }): React.JSX.E
             localStorage.setItem('hedgebox_user', JSON.stringify(userWithAvatar))
 
             // Track successful login
+            identifyUser(userWithAvatar)
             posthog.capture('logged_in')
-            posthog.identify(userWithAvatar.id, userWithAvatar)
 
             return true
         } catch {
@@ -102,10 +114,10 @@ export function AuthProvider({ children }: { children: ReactNode }): React.JSX.E
             localStorage.setItem('hedgebox_user', JSON.stringify(userData))
 
             // Track successful signup
+            identifyUser(userData)
             posthog.capture('signed_up', {
                 from_invite: false,
             })
-            posthog.identify(userData.id, userData)
 
             return true
         } catch {

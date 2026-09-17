@@ -6,11 +6,11 @@ These scenarios exercise application failures using synthetic accounts and ordin
 
 Deploy this revision with `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_HOST` configured at build time. Enable the Error tracking new-issue responder in the same PostHog project and connect this repository. Confirm the SDK initializes before triggering either scenario. The app captures unhandled promise rejections and forwards React error-boundary failures with `captureException`.
 
-Use the normal `/login` page on HTTPS or localhost with either account below and any nonempty password. Use one browser tab at a time: signing in replaces that origin's simulated login in local storage. `/demo` remains an optional setup shortcut. These are fixed synthetic accounts with reserved `example.com` addresses. Each account adds `demo_scenario` and `demo_synthetic` properties to captured events. No credentials or real user records are involved.
+Use the normal `/login` page on HTTPS or localhost with either account below and any nonempty password. Use one browser tab at a time: signing in replaces that origin's simulated login in local storage. `/demo` remains an optional setup shortcut. These are fixed synthetic demo accounts. Each account adds `demo_scenario` and `demo_synthetic` properties to captured events. No credentials or real user records are involved.
 
 ## Clipboard permission denied
 
-1. Log in as `clipboard-user@example.com`. Robin Demo opens the normal file dashboard in the embedded `/workspace`.
+1. Log in as `clipboard@posthog`. Robin Demo opens the normal file dashboard in the embedded `/workspace`.
 2. Open any file, choose **Share**, then **Copy**.
 3. The frame's `clipboard-write 'none'` permissions policy makes the browser reject the real Clipboard API call. The current copy handler does not handle that rejection and records success before copying succeeds.
 4. Find the `NotAllowedError` in Error tracking with `demo_scenario = clipboard-permission-denied`, then follow the corresponding Self-driving report.
@@ -21,7 +21,7 @@ Expected repaired behavior: copying succeeds when allowed; rejection leaves a us
 
 ## Missing display name
 
-1. Sign out, then log in as `legacy-profile@example.com`.
+1. Sign out, then log in as `bug@posthog.com`.
 2. Login identifies the synthetic account and records `logged_in`, then restores its incomplete profile and navigates to `/files`. The missing `name` models a legacy account whose profile was not fully populated.
 3. The files page reads `user.name.split(...)` and raises a `TypeError`. The application error boundary captures the actual error and displays a sign-out button.
 4. Find the issue with `demo_scenario = missing-display-name`, then follow its Self-driving report.

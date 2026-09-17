@@ -12,14 +12,14 @@ export interface DemoAccountFixture {
 const accounts: Record<string, DemoAccountFixture> = {
     clipboard: {
         id: 'demo-clipboard-permission-v1',
-        email: 'clipboard-user@example.com',
+        email: 'clipboard@posthog',
         name: 'Robin Demo',
         plan: 'personal/free',
         demo_scenario: 'clipboard-permission-denied',
     },
     profile: {
         id: 'demo-legacy-profile-v1',
-        email: 'legacy-profile@example.com',
+        email: 'bug@posthog.com',
         plan: 'personal/free',
         demo_scenario: 'missing-display-name',
     },

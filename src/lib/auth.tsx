@@ -6,6 +6,7 @@ import { sampleUsers } from './data'
 import { findDemoPersona } from './demoPersonas'
 import { DemoAccountFixture, findDemoAccount, openDemoAccount } from './demoScenarios'
 import { initPostHog, posthog } from './posthog'
+import { nameFromEmail } from './utils'
 
 interface User {
     id: string
@@ -76,13 +77,9 @@ export function AuthProvider({ children }: { children: ReactNode }): React.JSX.E
 
             let userData: User | undefined = (await findDemoPersona(email)) ?? sampleUsers.find((u) => u.email === email)
             if (!userData) {
-                const name = email.split('@')[0].replace(/[._]/g, ' ')
                 userData = {
                     id: `user_${Date.now()}`,
-                    name: name
-                        .split(' ')
-                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(' '),
+                    name: nameFromEmail(email),
                     email,
                     plan: 'personal/free',
                 }

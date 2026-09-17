@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth'
 import { sampleFiles } from '@/lib/data'
 import { useAuthRedirect } from '@/lib/hooks'
 import { posthog } from '@/lib/posthog'
-import { formatFileSize, getFileIcon } from '@/lib/utils'
+import { formatFileSize, getFileIcon, getFirstName } from '@/lib/utils'
 import { HedgeboxFile } from '@/types'
 
 export default function FilesPage(): React.JSX.Element | null {
@@ -122,7 +122,7 @@ export default function FilesPage(): React.JSX.Element | null {
                 <div className="mb-8 animate-fade-in">
                     <div className="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <h1 className="text-4xl font-bold mb-2">Welcome back, {user.name.split(' ')[0]}! 🦔</h1>
+                            <h1 className="text-4xl font-bold mb-2">Welcome back, {getFirstName(user)}! 🦔</h1>
                             <p className="text-base-content/70 text-lg">
                                 Manage your hedgehog files with spike-proof security
                             </p>

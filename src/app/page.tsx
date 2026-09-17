@@ -4,6 +4,7 @@ import Link from 'next/link'
 
 import Header from '@/components/Header'
 import { useAuth } from '@/lib/auth'
+import { getDisplayName, getFirstName } from '@/lib/utils'
 
 export default function HomePage(): JSX.Element {
     const { user } = useAuth()
@@ -27,12 +28,12 @@ export default function HomePage(): JSX.Element {
                                     </div>
                                     <div className="avatar mb-6">
                                         <div className="w-8 h-8 rounded-full ring-1 ring-base-300 shadow-md">
-                                            <img src={user.avatar} alt={user.name} />
+                                            <img src={user.avatar} alt={getDisplayName(user)} />
                                         </div>
                                     </div>
                                 </div>
                                 <h1 className="text-4xl font-bold tracking-tight text-base-content sm:text-6xl lg:text-7xl mb-6">
-                                    Welcome back, <span className="text-primary">{user.name.split(' ')[0]}</span>
+                                    Welcome back, <span className="text-primary">{getFirstName(user)}</span>
                                     <span className="ml-2">🦔</span>
                                 </h1>
                                 <p className="text-xl text-base-content/70 mb-8 max-w-2xl mx-auto leading-relaxed">

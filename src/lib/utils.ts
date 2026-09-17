@@ -1,3 +1,16 @@
+export const nameFromEmail = (email: string): string => {
+    const name = email.split('@')[0].replace(/[._]/g, ' ')
+    return name
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+}
+
+export const getDisplayName = (user: { name?: string; email: string }): string =>
+    user.name?.trim() || nameFromEmail(user.email)
+
+export const getFirstName = (user: { name?: string; email: string }): string => getDisplayName(user).split(' ')[0]
+
 export const formatFileSize = (bytes: number): string => {
     if (bytes === 0) {
         return '0 Bytes'

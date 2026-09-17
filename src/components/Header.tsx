@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { useAuth } from '@/lib/auth'
+import { getDisplayName, getFirstName } from '@/lib/utils'
 
 export default function Header(): JSX.Element {
     const { user, logout } = useAuth()
@@ -129,10 +130,10 @@ export default function Header(): JSX.Element {
                                 <div className="flex items-center space-x-2">
                                     <div className="avatar">
                                         <div className="w-8 h-8 rounded-full">
-                                            <img src={getAvatarUrl()} alt={user.name} />
+                                            <img src={getAvatarUrl()} alt={getDisplayName(user)} />
                                         </div>
                                     </div>
-                                    <span className="hidden xl:block font-medium">{user.name.split(' ')[0]}</span>
+                                    <span className="hidden xl:block font-medium">{getFirstName(user)}</span>
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path
                                             strokeLinecap="round"
@@ -152,11 +153,11 @@ export default function Header(): JSX.Element {
                                     <div className="flex items-center space-x-3 p-2 rounded-lg bg-primary/5">
                                         <div className="avatar">
                                             <div className="w-10 h-10 rounded-full">
-                                                <img src={getAvatarUrl()} alt={user.name} />
+                                                <img src={getAvatarUrl()} alt={getDisplayName(user)} />
                                             </div>
                                         </div>
                                         <div>
-                                            <div className="font-semibold text-sm">{user.name}</div>
+                                            <div className="font-semibold text-sm">{getDisplayName(user)}</div>
                                             <div className="text-xs text-base-content/70">{user.email}</div>
                                             <div className="badge badge-primary badge-xs mt-1">{user.plan}</div>
                                         </div>

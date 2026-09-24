@@ -11,9 +11,11 @@ export function initPostHog(): void {
             console.info('Analytics is disabled. Set NEXT_PUBLIC_POSTHOG_KEY in .env.local to enable it.')
             return
         }
-        const apiHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com'
+        const ingestionHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com'
+        // next.config.js forwards /ingest to the ingestion host, so ad blockers do not drop capture requests.
         posthog.init(apiToken, {
-            api_host: apiHost,
+            api_host: '/ingest',
+            ui_host: ingestionHost.replace('.i.posthog.com', '.posthog.com'),
             disable_compression: true,
             capture_pageview: 'history_change',
             autocapture: true,
@@ -22,7 +24,7 @@ export function initPostHog(): void {
             persistence: 'memory',
             opt_out_useragent_filter: true,
         })
-        console.info(`PostHog initialized for Hedgebox with host: ${apiHost}`)
+        console.info(`PostHog initialized for Hedgebox through /ingest to ${ingestionHost}`)
     }
     Object.assign(window, { posthog })
 }

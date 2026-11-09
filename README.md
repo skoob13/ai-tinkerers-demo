@@ -13,7 +13,7 @@ pnpm install
 pnpm dev
 ```
 
-Open http://localhost:3000. Without a PostHog project key, analytics is disabled. Development and production builds do not query a database or modify your environment file.
+Open http://localhost:3000. Analytics goes to the Hedgebox demo project by default; set `NEXT_PUBLIC_POSTHOG_KEY` to send it elsewhere. Development and production builds do not query a database or modify your environment file.
 
 ## Connect PostHog
 

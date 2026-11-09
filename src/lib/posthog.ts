@@ -1,16 +1,15 @@
 import posthog from 'posthog-js'
 
+// Public ingestion key of the Hedgebox demo project. NEXT_PUBLIC_POSTHOG_KEY overrides it.
+const DEFAULT_POSTHOG_KEY = 'phc_qixEfPaCLsAjWbfpCKBHALF6vzgY2YMLJFU9gU6kBTHa'
+
 export function initPostHog(): void {
     if (typeof window === 'undefined') {
         return
     }
 
     if (!posthog.__loaded) {
-        const apiToken = process.env.NEXT_PUBLIC_POSTHOG_KEY
-        if (!apiToken) {
-            console.info('Analytics is disabled. Set NEXT_PUBLIC_POSTHOG_KEY in .env.local to enable it.')
-            return
-        }
+        const apiToken = process.env.NEXT_PUBLIC_POSTHOG_KEY || DEFAULT_POSTHOG_KEY
         const apiHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com'
         posthog.init(apiToken, {
             api_host: apiHost,
